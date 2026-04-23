@@ -1,0 +1,15 @@
+{
+  "name": "opencourt-worker",
+  "version": "1.0.0",
+  "description": "SQS consumer worker for OpenCourt analytics",
+  "main": "src/worker.js",
+  "scripts": {
+    "start": "node src/worker.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.0.0",
+    "@aws-sdk/client-sqs": "^3.0.0",
+    "@aws-sdk/client-sns": "^3.0.0",
+    "pg": "^8.11.0"
+  }
+}
