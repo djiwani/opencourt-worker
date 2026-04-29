@@ -49,13 +49,14 @@ async function updateUserStats(userId) {
   await query(`
     INSERT INTO user_stats (
       user_id, courts_visited, total_checkins,
-      total_hours, current_streak, updated_at
-    ) VALUES ($1, $2, $3, $4, $5, NOW())
+      total_hours, current_streak, longest_streak, updated_at
+    ) VALUES ($1, $2, $3, $4, $5, $5, NOW())
     ON CONFLICT (user_id) DO UPDATE SET
       courts_visited = EXCLUDED.courts_visited,
       total_checkins = EXCLUDED.total_checkins,
       total_hours    = EXCLUDED.total_hours,
       current_streak = EXCLUDED.current_streak,
+      longest_streak = GREATEST(user_stats.longest_streak, EXCLUDED.current_streak),
       updated_at     = NOW()
   `, [
     userId,
@@ -102,6 +103,13 @@ async function awardBadges(userId, stats) {
         break;
       case 'streak_days':
         earned = stats.current_streak >= value;
+        break;
+      case 'sport_variety':
+        const sports = await query(`
+          SELECT COUNT(DISTINCT sport) AS sport_count
+          FROM checkins WHERE user_id = $1
+        `, [userId]);
+        earned = parseInt(sports.rows[0].sport_count) >= value;
         break;
     }
 

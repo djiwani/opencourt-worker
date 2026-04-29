@@ -1,0 +1,1 @@
+{"containerOverrides":[{"name":"api","command":["node","src/db/migrate.js"]}]}
